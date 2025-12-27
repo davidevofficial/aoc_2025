@@ -20,6 +20,7 @@ mod day9_silver;
 use std::time;
 fn main() {
     println!("Hello, world!");
+    let total_time_elapsed = time::Instant::now();
 
     //DAY 1
     let start = time::Instant::now();
@@ -110,6 +111,9 @@ fn main() {
     dbg!(day9_silver::solution());
     let duration = start.elapsed();
     dbg!(duration);
+
+
+    dbg!(total_time_elapsed.elapsed());
 }
 
 
