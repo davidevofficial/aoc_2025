@@ -23,8 +23,6 @@ pub fn solution() -> u64{
 
     let l3 = Line::from(5, 0, 10, Direction::Up);
     let l4 = Line::from(5, 0, 5, Direction::Up);
-    let l5 = Line::from(5, 5, 10, Direction::Up);
-    let l6 = Line::from(5, 10, 15, Direction::Up);
     let l7 = Line::from(5, 10, -10, Direction::Up);
     assert_eq!(true,l1.intersect(&l2,&l3));
     assert_eq!(false,l1.intersect(&l2,&l4));
