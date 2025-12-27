@@ -14,6 +14,8 @@ mod day7;
 mod day7_silver;
 mod day8;
 mod day8_silver;
+mod day9;
+mod day9_silver;
 
 use std::time;
 fn main() {
@@ -96,6 +98,16 @@ fn main() {
     dbg!(duration);
     let start = time::Instant::now();
     dbg!(day8_silver::solution());
+    let duration = start.elapsed();
+    dbg!(duration);
+
+    // DAY 9
+    let start = time::Instant::now();
+    dbg!(day9::solution());
+    let duration = start.elapsed();
+    dbg!(duration);
+    let start = time::Instant::now();
+    dbg!(day9_silver::solution());
     let duration = start.elapsed();
     dbg!(duration);
 }
