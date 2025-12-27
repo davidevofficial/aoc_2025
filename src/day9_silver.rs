@@ -91,8 +91,6 @@ pub fn solution() -> u64{
 
         }
         if is_this_the_one{
-            dbg!(max[i]);
-            dbg!(red_tiles[max[i].1],red_tiles[max[i].2]);
             return max[i].0;
         }
 
