@@ -11,7 +11,6 @@ pub fn solution() -> u64{
     let mut counter = 0;
     let machines = parse_parsed_input(lines);
     //Tests
-    let test_pack = MyByteMap{inner:vec![0,0,0,0,0,0]};
     let test_machine =Machine{
         pack: MyByteMap { inner: vec![0,1,1,0] },
         switches: vec![
@@ -35,13 +34,7 @@ pub fn solution() -> u64{
             MyByteMap{inner: vec![1,4,5]},
         ]
         ,joltages: Vec::new()});
-    // assert_eq!(MyByteMap{inner:vec![0,1,0,1,0,0]},test_pack^
-    //     test_machine.switches[0].clone()^
-    //     test_machine.switches[1].clone()^
-    //     test_machine.switches[2].clone()^
-    //     test_machine.switches[3].clone()
 
-    // );
     assert_eq!(2,test_machine.solve_machine());
     for m in machines{
         counter += m.solve_machine();
