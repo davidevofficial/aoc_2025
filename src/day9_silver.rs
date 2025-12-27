@@ -16,22 +16,7 @@ pub fn solution() -> u64{
     assert_eq!(6,(RedTile::from(7,3)*RedTile::from(2,3)));
     assert_eq!(RedTile::from(98366,50148),red_tiles[0]);
     assert_eq!(RedTile::from(98366,51373),red_tiles[1]);
-    let l1 = Line::from(5, 0, 10, Direction::Right);
-    let l2 = Line::from(10, 5, 10, Direction::Up);
-    let l11 = Line::from(10, 0, 10, Direction::Left);
-    let l22 = Line::from(0, 5, 10, Direction::Down);
 
-    let l3 = Line::from(5, 0, 10, Direction::Up);
-    let l4 = Line::from(5, 0, 5, Direction::Up);
-    let l5 = Line::from(5, 5, 10, Direction::Up);
-    let l6 = Line::from(5, 10, 15, Direction::Up);
-    let l7 = Line::from(5, 10, -10, Direction::Up);
-    assert_eq!(true,l1.intersect(&l2,&l3));
-    assert_eq!(false,l1.intersect(&l2,&l4));
-    assert_eq!(false,l2.intersect(&l11,&l7));
-    assert_eq!(true,l11.intersect(&l22,&l7));
-    assert_eq!(false,l22.intersect(&l1,&l7));
-    assert_eq!(false,l2.intersect(&l11,&l7));
 
 
     for i in 0..red_tiles.len(){
@@ -41,9 +26,9 @@ pub fn solution() -> u64{
         else{r2=red_tiles[0]}
 
         if r1.x == r2.x{
-            horizontal_lines.push(Line::from(r1.x, r1.y, r2.y, Direction::Right));
+            horizontal_lines.push(Line::from(true, r1.y, r2.y));
         }else if r1.y == r2.y{
-            vertical_lines.push(Line::from(r1.y, r1.x, r2.x, Direction::Up));
+            vertical_lines.push(Line::from(false, r1.x, r2.x));
         }
 
     }
@@ -68,32 +53,22 @@ pub fn solution() -> u64{
         if r1.y<r2.y{y1=r1.y}else{y1=r2.y}
         let y2;
         if r1.y<r2.y{y2=r2.y}else{y2=r1.y}
-        let border_lines = [Line::from(y1, x1, x2, Direction::Right),Line::from(x2, y1, y2, Direction::Up),
-                                        Line::from(y2, x1, x2, Direction::Left),Line::from(x1, y1, y2, Direction::Down)];
+        let rect = todo!();
 
         let mut is_this_the_one = true;
-        for j in 0..border_lines.len(){
-            let j1 = j;
-            let j2;
-            if j+1>3{j2=0}else{j2=j+1}
-            let j1 = border_lines[j1];
-            let j2 = border_lines[j2];
-            for k in vertical_lines.clone(){
-                if is_this_the_one && j % 2 == 0{
-                    if j1.intersect(&j2, &k){is_this_the_one=false;}
+        for k in horizontal_lines{
+            if is_this_the_one{
+                if k.intersect(rect){
+                    is_this_the_one = false;
                 }
             }
-            for k in horizontal_lines.clone(){
-                if is_this_the_one && j % 2 == 1{
-                    if j1.intersect(&j2, &k){is_this_the_one=false;}
-                }
-            }
-
         }
-        if is_this_the_one{
-            dbg!(max[i]);
-            dbg!(red_tiles[max[i].1],red_tiles[max[i].2]);
-            return max[i].0;
+        for k in vertical_lines{
+            if is_this_the_one{
+                if k.intersect(rect){
+                    is_this_the_one = false;
+                }
+            }
         }
 
     }
@@ -134,85 +109,35 @@ impl RedTile {
 #[derive(Debug, Default,Clone, Copy)]
 struct Line{
     /// Number refers to, for example, (number, from) -> (number, to) so like (5, 3) -> (5, 7)
-    number: i32,
+    // number: i32,
     /// From must be smaller than to
-    from: i32,
+    from: (i32,i32),
     /// To must be higher than from
-    to: i32,
-    direction: Direction
+    to: (i32,i32),
 }
-#[derive(Debug, Default,Copy,Clone,PartialEq, Eq, PartialOrd, Ord)]
-enum Direction{
-    Up,
-    #[default]
-    Down,
-    Left,
-    Right
-}
+struct Rect{a: (i32,i32), b: (i32,i32), c: (i32,i32), d: (i32,i32)}
 impl Line{
-    fn from(number: i32, x1: i32, x2: i32, direction: Direction) -> Line{
+    fn from(horizontal:bool,number:i32, x1: i32, x2: i32) -> Line{
         if x1 < x2{
-            return Line { number, from: x1, to: x2, direction }
+            if horizontal{
+                return Line {from:(x1,number), to:(x2, number)};
+            }else{
+                Line { from: (number, x1), to: (number, x2) }
+            }
         }else{
-            return Line { number, from: x2, to: x1, direction }
+            if horizontal{
+                return Line {from:(x2,number), to:(x1, number)};
+            }else{
+                Line { from: (number, x2), to: (number, x1) }
+            }
         }
     }
-    fn intersect(self: &Self, next_line: &Line, other: &Line) -> bool{
-        match (self.direction, next_line.direction){
-            (Direction::Up, Direction::Right)=>{
-                // First case: intersects a line that is exiting
-                if self.number == other.to && self.from < other.number && self.to > other.number{return false}
-                // Second case: intersects a line
-                else if self.number >= other.from && self.number <= other.to && self.from < other.number && self.to > other.number{return true}
-            },
-            (Direction::Up, Direction::Left)=>{
-                // First case: intersects a line that is exiting
-                if self.number == other.from && self.from < other.number && self.to > other.number{return false}
-                // Second case: intersects a line
-                else if self.number >= other.from && self.number <= other.to && self.from < other.number && self.to > other.number{return true}
-            },
-            (Direction::Down, Direction::Right)=>{
-                // First case: intersects a line that is exiting
-                if self.number == other.to && self.from < other.number && self.to > other.number{return false}
-                // Second case: intersects a line
-                else if self.number >= other.from && self.number <= other.to && self.from < other.number && self.to > other.number{return true}
-            },
-            (Direction::Down, Direction::Left)=>{
-                // First case: intersects a line that is exiting
-                if self.number == other.from && self.from < other.number && self.to > other.number{return false}
-                // Second case: intersects a line
-                else if self.number >= other.from && self.number <= other.to && self.from < other.number && self.to > other.number{return true}
-            },
-            (Direction::Right, Direction::Up)=>{
-                // First case: intersects a line that is exiting
-                if self.number == other.to && self.from < other.number && self.to > other.number{return false}
-                // Second case: intersects a line
-                else if self.number >= other.from && self.number <= other.to && self.from < other.number && self.to > other.number{return true}
-            },
-            (Direction::Right, Direction::Down)=>{
-                // First case: intersects a line that is exiting
-                if self.number == other.from && self.from < other.number && self.to > other.number{return false}
-                // Second case: intersects a line
-                else if self.number >= other.from && self.number <= other.to && self.from < other.number && self.to > other.number{return true}
-            },
-            (Direction::Left, Direction::Up)=>{
-                // First case: intersects a line that is exiting
-                if self.number == other.to && self.from < other.number && self.to > other.number{return false}
-                // Second case: intersects a line
-                else if self.number >= other.from && self.number <= other.to && self.from < other.number && self.to > other.number{return true}
-            },
-            (Direction::Left, Direction::Down)=>{
-                // First case: intersects a line that is exiting
-                if self.number == other.from && self.from < other.number && self.to > other.number{return false}
-                // Second case: intersects a line
-                else if self.number >= other.from && self.number <= other.to && self.from < other.number && self.to > other.number{return true}
-            },
-            _=>{}
-        }
+    fn intersect(self: &Self, rect: Rect) -> bool{
+
+
         return false;
     }
 }
-// todo!() implement intersection between two perpendicular lines
 impl std::ops::Mul for RedTile{
     type Output = u64;
     fn mul(self, rhs: Self) -> Self::Output {
