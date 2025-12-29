@@ -232,7 +232,7 @@ fn parse_parsed_input(lines: Vec<Vec<u8>>) -> Vec<Machine>{
                 left_curly = i;
             }
         }
-        let mut new_lines =
+        let new_lines =
             lines_from_comma_separated_bytes(line[left_curly+1..line.clone().len()-1].to_vec());
 
         for l in new_lines{
