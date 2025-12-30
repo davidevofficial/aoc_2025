@@ -55,10 +55,10 @@ fn check_double(number: u64) -> bool{
     // if divisible by 4 && four equal parts -> true
     let number_string = number.to_string();
     let mut equal = false;
-    for x in 2..100{
+    for x in 2..12{
         let len = number_string.len();
         if len % x == 0{
-            let mut list: [&str; 100] = [""; 100];
+            let mut list: [&str; 12] = [""; 12];
             for i in 0..x{
                 list[i] = &(number_string[(len/x)*i..(len/x)*(i+1)]);
             }
